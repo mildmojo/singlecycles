@@ -25,19 +25,30 @@ $(function(){
     $(msg._element).animate({ top: center_in_y( msg.height ) });
 
     var assets = [
-      'images/unicycles.png'
-      ,'images/worlds.png'
-      ,'images/starfield.png'
+      'assets/images/unicycles.png'
+      ,'assets/images/worlds.png'
+      ,'assets/images/starfield.png'
+      ,'assets/sounds/soundsheet.'
     ]
 
     Crafty.load(assets, function(){
+      init_sprites();
+
       Crafty.scene('main');
     })
 
   });
 
+  Crafty.scene('main', function(){
 
 
+  });
+
+  
+  function init_sprites() {
+
+
+  }
 
   Crafty.scene('loading');
 
