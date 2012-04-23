@@ -1,5 +1,12 @@
 .loading-text {
   font-family: Impact, Sans;
+}
+
+.countdown-text {
+  font-family: Tahoma, Sans;
+}
+
+.loading-text, .countdown-text {
   color:       white;
   text-align:  center;
 }

@@ -15,46 +15,59 @@ function initInput() {
     })
     .bind( 'KeyDown', function(e){
       if ( isUsableKey( e.key ) ) {
-        switch ( StateManager.state ) {
+        entity = StateManager.keyEntities[e.key];
+
+        switch ( StateManager.state() ) {
           case 'attract':
-            StateManager.addPlayer( 'key', e.key );
           case 'countdown':
             StateManager.addPlayer( 'key', e.key );
+            break;
           case 'race':
-            handleEvent( 'down', StateManager.keyEntities[e.key] );
+            handleEvent( 'down', entity );
+            break;
           case 'finish':
+            break;
         }
+
         e.preventDefault();
+        e.stopPropagation();
       }
     })
     .bind( 'KeyUp', function(e){
       if ( isUsableKey( e.key ) ) {
         entity = StateManager.keyEntities[e.key];
 
-        switch ( StateManager.state ) {
+        switch ( StateManager.state() ) {
           case 'attract':
+            break;
           case 'countdown':
             // Key released before race start; remove player and restart timer
             StateManager.removePlayer( 'key', e.key );
+            break;
           case 'race':
+            handleEvent( 'up', entity );
+            break;
           case 'finish':
+            break;
         }
-        if ( StateManager.state == 'attract' ) {
-          entity = StateManager.keyEntities[e.key];
-          entity && entity.destroy();
-        } else if ( StateManager )
-        handleEvent( 'up', StateManager.keyEntities[e.key] );
+
         e.preventDefault();
+        e.stopPropagation();
       }
     });
 
   $(inputLayer._element)
-    .bind( 'touchstart', function(e){
+    .on( 'touchstart', function(e){
       // find touch-bound entity near coords and .go
     })
-    .bind( 'touchend', function(e){
+    .on( 'touchend', function(e){
       // find touch-bound entity near coords and .stop
     });
+
+  // WORKAROUND: Crafty doesn't support KeyPress and a Crafty entity wasn't
+  //   reliably receiving keypress events, so go ahead and attach the
+  //   typeahead cancel function directly to the <body> tag.
+  $('body').on( 'keypress', function(e){ return false } );
 
   function handleEvent( state, entity ) {
     if ( entity ) {

@@ -32,7 +32,6 @@ console.log([SCREEN_WIDTH, SCREEN_HEIGHT]);
 
     height = SCREEN_HEIGHT / 8;
     progress = Crafty.e( '2D, DOM, Text, loading-text' )
-      .text( '00%' )
       .attr({ w: SCREEN_WIDTH, h: height, z: Layer.HUD_BG })
       .css({ 'font-size': height.toString() + 'px' });
 
