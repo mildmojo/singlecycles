@@ -38,6 +38,8 @@ var Timer = {
     this.dt = now - this._lastTick;
     this._lastTick = now;
   }
+
+  ,now: function() { return new Date; }
 }
 
 var GameConfig = {
@@ -100,16 +102,49 @@ var StateManager = {
     return this._currentCycle;
   }
 
-  ,add_player: function( method, address ) {
+  ,addPlayer: function( method, address ) {
     newEntity = Crafty.e( 'Unicycle' )
         .cycle( this.cycle() );
 
-    if ( method == 'mouse' ) {
-      this.mouseEntity = newEntity.controls( method, address );
-    } else if ( method == 'touch' ) {
-      this.touchEntities[address] = newEntity.controls( method, address );
-    } else {
-      this.keyEntities[address] = newEntity.controls( method, address );
+    switch ( method ) {
+      case 'mouse':
+        this.mouseEntity = newEntity.controls( method, address );
+      case 'touch':
+        this.touchEntities[address] = newEntity.controls( method, address );
+      default:
+        this.keyEntities[address] = newEntity.controls( method, address );
+    }
+
+    this.playerCount++;
+    this.state('countdown');
+  }
+
+  ,removePlayer: function( method, address ) {
+    switch ( method ) {
+      case 'mouse':
+        this.mouseEntity && this.mouseEntity.destroy();
+        this.mouseEntity = null;
+      case 'touch':
+        this.touchEntities[address] && this.touchEntities[address].destroy()
+        delete this.touchEntities[address];
+      default:
+        this.keyEntities[address] && this.keyEntities[address].destroy();
+        delete this.keyEntities[address];
+    }
+
+    this.playerCount--;
+
+    if ( _(['attract', 'countdown']).include( this.state() ) {
+      this.playerCount == 0 ? this.state('attract') : this.state('countdown');
+    }
+  }
+
+  ,startCountdown: function() {
+    if ( _(['attract', 'countdown']).include( this.state() ) ) {
+      players = [ _(this.keyEntities).keys(), _(this.touchEntities).keys(), this.mouseEntity ]
+      if ( _(players).flatten().length > 0 ) {
+        this._countdownStart = new Date;
+      }
     }
   }
 }

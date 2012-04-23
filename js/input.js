@@ -15,12 +15,34 @@ function initInput() {
     })
     .bind( 'KeyDown', function(e){
       if ( isUsableKey( e.key ) ) {
-        handleEvent( 'down', StateManager.keyEntities[e.key] );
+        switch ( StateManager.state ) {
+          case 'attract':
+            StateManager.addPlayer( 'key', e.key );
+          case 'countdown':
+            StateManager.addPlayer( 'key', e.key );
+          case 'race':
+            handleEvent( 'down', StateManager.keyEntities[e.key] );
+          case 'finish':
+        }
         e.preventDefault();
       }
     })
     .bind( 'KeyUp', function(e){
       if ( isUsableKey( e.key ) ) {
+        entity = StateManager.keyEntities[e.key];
+
+        switch ( StateManager.state ) {
+          case 'attract':
+          case 'countdown':
+            // Key released before race start; remove player and restart timer
+            StateManager.removePlayer( 'key', e.key );
+          case 'race':
+          case 'finish':
+        }
+        if ( StateManager.state == 'attract' ) {
+          entity = StateManager.keyEntities[e.key];
+          entity && entity.destroy();
+        } else if ( StateManager )
         handleEvent( 'up', StateManager.keyEntities[e.key] );
         e.preventDefault();
       }

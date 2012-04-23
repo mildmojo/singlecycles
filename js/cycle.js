@@ -11,6 +11,7 @@ $(function(){
     ,_radius:         0
     ,_originX:        0
     ,_originY:        0
+    ,_joinTimerStart: null
     ,isAirborne:      false
 
     ,init: function() {
@@ -36,6 +37,10 @@ $(function(){
       }
 
       return this;
+    }
+
+    ,joinTimer: function() {
+      return Timer.now() - this._joinTimerStart;
     }
 
     ,enterFrame: function() {
