@@ -41,9 +41,9 @@ $(function(){
         ,h: SCREEN_HEIGHT / 4
       })
       .css({ 'font-size': (SCREEN_HEIGHT / 25).toString() + 'px' });
-    bylineText.y = SCREEN_HEIGHT * 0.80;
+    bylineText.y = SCREEN_HEIGHT * 0.75;
     bylineText.bind('EnterFrame', function(){
-      if ( Math.abs( bylineText.y - SCREEN_HEIGHT * 0.80 ) > 3 ) {
+      if ( Math.abs( bylineText.y - SCREEN_HEIGHT * 0.75 ) > 3 ) {
         bylineText.y = SCREEN_HEIGHT * 0.80;
       }
     });
@@ -59,6 +59,10 @@ $(function(){
       + 'competition entry page</a>.'
       + '</span></p>');
     StateManager.bylineText = bylineText;
+
+    // Make mobile address bar disappear?
+    $('body').css({ height: SCREEN_HEIGHT * 2 });
+    window.scrollTo(0,1);
 
     // Allow players to join the next race
     StateManager.state('attract');

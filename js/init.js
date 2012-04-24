@@ -15,7 +15,6 @@ $(function(){
     SCREEN_HEIGHT = Crafty.DOM.window.height;
   });
 
-
   Crafty.scene('loading');
 
 });

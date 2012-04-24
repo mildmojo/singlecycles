@@ -3,6 +3,11 @@ $(function(){
   Crafty.scene('loading', function(){
     Crafty.background( '#333' );
 
+    // Make mobile address bar disappear?
+    $('body').css({ height: SCREEN_HEIGHT * 2 });
+    window.scrollTo(0,1);
+
+
     height = SCREEN_HEIGHT / 8;
     msg = Crafty.e( '2D, DOM, Text, loading-text' )
       .text( 'Circumnavigating, please wait...' )
