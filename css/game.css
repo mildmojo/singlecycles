@@ -6,6 +6,21 @@
   font-family: Tahoma, Sans;
 }
 
+.byline-text {
+  font-family:  Tahoma, Verdana, Sans;
+  color:        #A0A0A0;
+  text-align:   center;
+}
+
+.byline-text p {
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+.byline-text a:link, .byline-text a:visited {
+  color: #BFBFBF;
+}
+
 .loading-text, .countdown-text {
   color:       white;
   text-align:  center;
@@ -14,4 +29,8 @@
 .planet-text {
   color:      black;
   text-align: center;
+}
+
+.smallcaps {
+  font-variant: small-caps;
 }

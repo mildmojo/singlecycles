@@ -33,6 +33,33 @@ $(function(){
     Crafty.unbind( 'EnterFrame', showBannerText );
     Crafty.bind( 'EnterFrame', showBannerText );
 
+    var bylineText = Crafty.e( '2D, DOM, Text, byline-text' )
+      .attr({
+        x: 0
+        ,z: Layer.LINKS
+        ,w: SCREEN_WIDTH
+        ,h: SCREEN_HEIGHT / 4
+      })
+      .css({ 'font-size': (SCREEN_HEIGHT / 25).toString() + 'px' });
+    bylineText.y = SCREEN_HEIGHT * 0.80;
+    bylineText.bind('EnterFrame', function(){
+      if ( Math.abs( bylineText.y - SCREEN_HEIGHT * 0.80 ) > 3 ) {
+        bylineText.y = SCREEN_HEIGHT * 0.80;
+      }
+    });
+    bylineText.text(
+      '<p>'
+      + '<span class="smallcaps">Single Cycles, a game for many'
+      + ' players by <a href="http://twitter.com/mildmojo">@mildmojo</a>.'
+      + '</span></p><p><span class="smallcaps">'
+      + 'Submitted for Ludum Dare 23, a 48-hour game dev challenge. Send'
+      + ' feedback on Twitter or at the'
+      + ' <a href="http://www.ludumdare.com'
+      + '/compo/ludum-dare-23/?action=preview&uid=6748">'
+      + 'competition entry page</a>.'
+      + '</span></p>');
+    StateManager.bylineText = bylineText;
+
     // Allow players to join the next race
     StateManager.state('attract');
 
@@ -53,6 +80,7 @@ function showBannerText() {
       countdown.text( 'Everyone hold a key to join the race!' );
       break;
     case 'countdown':
+      $(StateManager.bylineText._element).fadeOut( 2000 );
       countdown.visible = true;
       countdownNumber = StateManager.getCountdown();
       countdown.text( 'Race starts in ' + countdownNumber.toString() + '...' );

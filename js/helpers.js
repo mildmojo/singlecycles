@@ -12,13 +12,14 @@ var GameConfig = {
   }
   ,planets: {
     fire:     { gravity: 1, radius: 80, friction: 6, lapCount: 10 }
-    ,jungle:  { gravity: 1, radius: 80, friction: 6, lapCount: 15 }
-    ,rock:    { gravity: 1, radius: 80, friction: 6, lapCount: 20 }
+    ,jungle:  { gravity: 1, radius: 80, friction: 4, lapCount: 15 }
+    ,rock:    { gravity: 1, radius: 80, friction: 7, lapCount: 20 }
   }
 };
 
 var Layer = {
-  INPUT:    12
+  LINKS:   15
+  ,INPUT:   12
   ,HUD_FG:  10
   ,HUD_BG:  9
   ,EFFECTS: 7
@@ -99,4 +100,3 @@ var Timer = {
 
   ,now: function() { return new Date; }
 }
-

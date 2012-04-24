@@ -13,6 +13,7 @@ var StateManager = {
   ,touchEntities:   {}
   ,playerCount:     0
   ,bannerText:      null
+  ,bylineText:      null
 
   ,state: function( new_state ) {
     if ( new_state ) {
@@ -90,6 +91,7 @@ var StateManager = {
         planet.y    = center_in_y( planet.h );
       });
       this._planetSprite = planet;
+
 
       var planetText = Crafty.e( '2D, DOM, Text, planet-text' )
         .attr({
@@ -237,6 +239,7 @@ var StateManager = {
     self._planetSprite.destroy();
     self.bannerText.destroy();
     self._planetText.destroy();
+    self.bylineText.destroy();
     //self.mouseEntity && self.mouseEntity.destroy();
     // _.chain(self.keyEntities).values().each(function(e){
     //   e.destroy();
@@ -260,5 +263,6 @@ var StateManager = {
     self.playerCount      = 0;
     self.bannerText       = null;
     self._planetText      = null;
+    self.bylineText       = null;
   }
 }
