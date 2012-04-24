@@ -25,10 +25,10 @@ $(function(){
         y: SCREEN_HEIGHT / 12,
         z: Layer.HUD_BG,
         w: SCREEN_WIDTH,
-        h: SCREEN_HEIGHT / 8,
+        h: SCREEN_HEIGHT / 10,
         visible: false
       })
-      .css({ 'font-size': SCREEN_HEIGHT / 8 });
+      .css({ 'font-size': SCREEN_HEIGHT / 10 });
 
     Crafty.unbind( 'EnterFrame', showBannerText );
     Crafty.bind( 'EnterFrame', showBannerText );
