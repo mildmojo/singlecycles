@@ -5,6 +5,7 @@ var StateManager = {
   ,_currentCycle:   ''
   ,_countdownStart: null
   ,_lastCount:      0
+  ,_laps:           {}
   ,keyEntities:     {}
   ,mouseEntity:     null
   ,touchEntities:   {}
@@ -14,7 +15,7 @@ var StateManager = {
     if ( new_state ) {
       transition  = this._state + '-' + new_state;
       this._state = new_state;
-console.log(transition);
+//console.log(transition);
       switch ( transition ) {
         case 'attract-countdown':
         case 'countdown-countdown':
@@ -26,7 +27,12 @@ console.log(transition);
           break;
         case 'race-finish':
           window.juke.play( 'crowd_noise' );
-          $('body').delay( 3000 ).queue( function() { /* TODO reset */ } );
+
+          winner = _(this._laps).keys().max( function(k){ return this._laps[k] });
+          this._winner = _(Crafty.keys).keys().find(function(k){ return Crafty.keys[k] == winner; });
+          $('body').delay( 3000 ).queue( function() {
+            Crafty.scene('main');
+          });
           break;
         case 'finish-attract':
           break;
@@ -93,6 +99,8 @@ console.log(transition);
         this.keyEntities[address] = newEntity;
     }
 
+    this._laps[address] = 0;
+
     window.juke.play( 'click' )
     this.playerCount++;
     console.log('player added: ' + this.playerCount.toString() + ' total');
@@ -124,6 +132,8 @@ console.log(transition);
         this.keyEntities[address] && this.keyEntities[address].destroy();
         delete this.keyEntities[address];
     }
+
+    delete this._laps[address];
 
     window.juke.play( 'bubble' );
     this.playerCount--;
@@ -170,5 +180,18 @@ console.log(transition);
 
       StateManager._lastCount = curCount;
     }
+  }
+
+  ,countLap: function( address ) {
+    this._laps[address] += 1;
+    window.juke.play('lap_ding');
+
+    if ( this._laps[address] >= GameConfig.planets[this.planet()].lapCount ) {
+      this.state('finish');
+    }
+  }
+
+  ,getWinner: function() {
+    return this._winner;
   }
 }

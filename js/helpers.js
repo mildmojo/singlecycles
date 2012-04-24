@@ -1,16 +1,19 @@
 // helpers.js
 
+var DEG_TO_RAD = ( 2.0 * Math.PI ) / 360;
+var RAD_TO_DEG = 360 / ( 2.0 * Math.PI );
+
 var GameConfig = {
-  raceCountdownTime: 3
+  raceCountdownTime: 1
   ,cycles: {
-    slow:     { accelFactor: 0.2, mass: 10 }
-    ,normal:  { accelFactor: 0.3, mass: 7 }
-    ,fast:    { accelFactor: 0.4, mass: 4 }
+    slow:     { accelFactor: 20, mass: 10, maxVelocity: 8 }
+    ,normal:  { accelFactor: 30, mass: 7,  maxVelocity: 9 }
+    ,fast:    { accelFactor: 40, mass: 4,  maxVelocity: 10 }
   }
   ,planets: {
-    fire:     { gravity: 5, radius: 80, friction: 0.1 }
-    ,jungle:  { gravity: 5, radius: 80, friction: 0.1 }
-    ,rock:    { gravity: 5, radius: 80, friction: 0.1 }
+    fire:     { gravity: 5, radius: 80, friction: 10 }
+    ,jungle:  { gravity: 5, radius: 80, friction: 10 }
+    ,rock:    { gravity: 5, radius: 80, friction: 10 }
   }
 };
 
@@ -79,6 +82,8 @@ function _doFadeBlack( startAlpha, endAlpha, duration ) {
     .tween({ alpha: endAlpha }, ( duration / 1000 ) * Crafty.timer.getFPS() );
 }
 
+// Gets called by Crafty's EnterFrame event, so needs to refer to
+//   'Timer' instead of 'this'
 var Timer = {
   _lastTick:  null
   ,dt:        0
@@ -86,10 +91,10 @@ var Timer = {
   ,tick: function() {
     now = new Date;
 
-    if ( this._lastTick == null ) this._lastTick = now;
+    if ( Timer._lastTick == null ) Timer._lastTick = now;
 
-    this.dt = now - this._lastTick;
-    this._lastTick = now;
+    Timer.dt = (now - Timer._lastTick) / 1000;
+    Timer._lastTick = now;
   }
 
   ,now: function() { return new Date; }

@@ -21,22 +21,22 @@ $(function(){
       // Start on top of the planet
       planetName   = StateManager.planet();
       planetSprite = StateManager.planetSprite();
-      this.attr({
-        x: origin().x
-        ,y: origin().y - GameConfig.planets[planetName].radius / 2
-        ,w: 48
-        ,h: 48
-      });
+      this.attr({ w: 48, h: 48 });
+      this.origin('center');
 
       return this;
     }
 
     ,cycle: function( cycleName ) {
       this._cycleName   = cycleName = cycleName.toLowerCase();
-      this._spriteName  = 'unicycle_' + cycleName;
       this._accelFactor = GameConfig.cycles[cycleName].accelFactor;
       this._maxVelocity = GameConfig.cycles[cycleName].maxVelocity;
+      this._spriteName  = 'unicycle_' + cycleName;
       this.requires( this._spriteName );
+
+      this.ready = true;
+      this.trigger('Change');
+
       return this;
     }
 
@@ -64,32 +64,47 @@ $(function(){
       this._accelFactor = 0;
     }
 
-    ,enterFrame: function() {
+    ,enterFrame: function(frame) {
       var dt = Timer.dt;
       planet = GameConfig.planets[StateManager.planet()];
 
       switch ( StateManager.state() ) {
         case 'attract', 'countdown':
+          break;
         case 'race':
-          this._velocity += this._accelFactor * dt;
+          if ( ! this.isAirborne ) {
+            this._velocity += this._accelFactor * dt;
+          }
           this._velocity -= planet.friction * dt;
           this._velocity  = clampVal( this._velocity, 0, this._maxVelocity );
+          //console.log([ dt, this._accelFactor, planet.friction, this._maxVelocity, this._velocity ]);
+          break;
         case 'finish':
-          this._
+          break;
       }
 
       // Linear velocity is pct of circumference, convert to angular
-      circumference = planet.radius * 2.0 * Math.pi;
-      this._angle  += (this._velocity / circumference) * 360;
+      two_pi = 2.0 * Math.PI;
+      altitude = planet.radius + this.h / 2.0;
+      circumference = altitude * two_pi;
+      rotation_incr = ( (this._velocity / circumference) * 360 );
+
+      // Rotation grows from 0 to -360 for counter-clockwise racing
+      new_rotation  = ( this.rotation - rotation_incr ) % 360;
+
+      if ( Math.abs( this.rotation - new_rotation ) > 350 ) {
+        StateManager.countLap( this._controlAddress );
+      }
+
+      this.rotation = new_rotation;
 
       // Move the player on the surface of the planet
-      this.x = Math.cos( this._angle ) * planet.radius + planet.originX;
-      this.y = Math.sin( this._angle ) * planet.radius + planet.originY;
-
-      this.rotation = this._angle;
+      angle = (this.rotation - 90) * DEG_TO_RAD;
+      this.x = Math.cos( angle ) * altitude + origin().x - this.w / 2;
+      this.y = Math.sin( angle ) * altitude + origin().y - this.h / 2;
 
       // calculate centripetal force based on new velocity
-      // this.isAirborne = ( self._radius > Race.planet.radius );
+      //this.isAirborne = ( self._radius > Race.planet.radius );
     }
     // track:
     //   key bound to this player

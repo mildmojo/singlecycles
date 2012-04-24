@@ -30,6 +30,9 @@ $(function(){
 
     Crafty.bind( 'EnterFrame', function() {
       switch ( StateManager.state() ) {
+        case 'attract':
+          countdown.visible = true;
+          countdown.text( 'Hold keys to join the race!' );
         case 'countdown':
           countdown.visible = true;
           countdownNumber = StateManager.getCountdown();
@@ -45,6 +48,12 @@ $(function(){
               .queue( function() { countdown.visible = false; });
           }
           break;
+        case 'finish':
+          countdown.visible = true;
+          countdown.text( 'Winner: ' );
+          $(countdown._element).delay(500).queue( function(){
+            countdown.text( 'Winner: ' + StateManager.getWinner() );
+          });
         default:
           countdown.visible = false;
       }

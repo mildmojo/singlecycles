@@ -118,7 +118,6 @@ $(function(){
       ,world_jungle:  [1, 0]
       ,world_rock:    [2, 0]
     });
-
   }
 
 });

@@ -5521,9 +5521,14 @@ Crafty.c("Tint", {
 	init: function () {
 		var draw = function d(e) {
 			var context = e.ctx || Crafty.canvas.context;
+      //var old_gco = context.globalCompositeOperation;
+
+			//context.globalCompositeOperation = "source-over";
 
 			context.fillStyle = this._color || "rgb(0,0,0)";
 			context.fillRect(e.pos._x, e.pos._y, e.pos._w, e.pos._h);
+
+			//context.globalCompositeOperation = old_gco;
 		};
 
 		this.bind("Draw", draw).bind("RemoveComponent", function (id) {

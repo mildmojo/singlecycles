@@ -23,11 +23,12 @@ function initInput() {
             StateManager.addPlayer( 'key', e.key );
             break;
           case 'race':
-            handleEvent( 'down', entity );
             break;
           case 'finish':
             break;
         }
+
+        handleEvent( 'down', entity );
 
         e.preventDefault();
         e.stopPropagation();
@@ -45,11 +46,12 @@ function initInput() {
             StateManager.removePlayer( 'key', e.key );
             break;
           case 'race':
-            handleEvent( 'up', entity );
             break;
           case 'finish':
             break;
         }
+
+        handleEvent( 'up', entity );
 
         e.preventDefault();
         e.stopPropagation();
