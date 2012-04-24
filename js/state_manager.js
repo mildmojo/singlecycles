@@ -133,7 +133,7 @@ var StateManager = {
 
     window.juke.play( 'click' )
     this.playerCount++;
-    console.log('player added: ' + this.playerCount.toString() + ' total');
+    //console.log('player added: ' + this.playerCount.toString() + ' total');
 
     this.state('countdown');
   }
@@ -167,7 +167,7 @@ var StateManager = {
 
     window.juke.play( 'bubble' );
     this.playerCount--;
-    console.log( 'player removed: ' + this.playerCount.toString() + ' remaining' );
+    //console.log( 'player removed: ' + this.playerCount.toString() + ' remaining' );
   }
 
   ,startCountdown: function() {

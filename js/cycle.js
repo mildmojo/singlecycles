@@ -137,7 +137,7 @@ $(function(){
       }
 
       if ( is_airborne && ! this.isAirborne ) {
-        console.log('air!');
+        //console.log('air!');
         window.juke.play('liftoff');
       }
 
