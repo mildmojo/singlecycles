@@ -3,7 +3,7 @@ $(function(){
   Crafty.scene('loading', function(){
     Crafty.background( '#333' );
 
-    height = SCREEN_HEIGHT / 7;
+    height = SCREEN_HEIGHT / 8;
     msg = Crafty.e( '2D, DOM, Text, loading-text' )
       .text( 'Circumnavigating, please wait...' )
       .attr({ w: SCREEN_WIDTH, h: height, z: Layer.HUD_BG })
@@ -12,7 +12,7 @@ $(function(){
     msg.x = center_in_x(msg.width);
     msg.y = -msg.height - 10;
 
-    $(msg._element).animate({ top: center_in_y( msg.h ) });
+    $(msg._element).animate({ top: SCREEN_HEIGHT * 0.25 });
 
     height = SCREEN_HEIGHT / 10;
     progress = Crafty.e( '2D, DOM, Text, loading-text' )
@@ -20,9 +20,9 @@ $(function(){
       .css({ 'font-size': height.toString() + 'px' });
 
     progress.x = center_in_x(progress.width)
-    progress.y = SCREEN_HEIGHT + 10;
+    progress.y = SCREEN_HEIGHT * 0.75; //+ 10;
 
-    $(progress._element).animate({ top: SCREEN_HEIGHT * 0.7 });
+    //$(progress._element).animate({ top: SCREEN_HEIGHT * 0.7 });
 
     var assets = [
       'assets/images/unicycles.png'
@@ -50,7 +50,7 @@ $(function(){
       },
       // On progress
       function(e){
-        progress.text( e.percent.toString() + '%' );
+        progress.text( Math.round(e.percent).toString() + '%' );
       });
 
   });

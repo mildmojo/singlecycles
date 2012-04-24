@@ -85,16 +85,24 @@ var StateManager = {
       var planet  = Crafty.e( '2D, Canvas, Tween, world_' + this.planet() );
       planet.x    = center_in_x( planet.w );
       planet.y    = center_in_y( planet.h );
+      planet.bind('EnterFrame', function(){
+        planet.x    = center_in_x( planet.w );
+        planet.y    = center_in_y( planet.h );
+      });
       this._planetSprite = planet;
 
       var planetText = Crafty.e( '2D, DOM, Text, planet-text' )
         .attr({
-          x: center_in_x(planet.w)
-          ,y: center_in_y(planet.h / 2)
-          ,w: planet.w
+          w: planet.w
           ,h: planet.h / 2
         })
         .css({ 'font-size': (planet.h / 2).toString() + 'px' });
+      planetText.x = center_in_x(planet.w);
+      planetText.y = center_in_y(planet.h / 2);
+      planetText.bind('EnterFrame', function(){
+        planetText.x = center_in_x(planet.w);
+        planetText.y = center_in_y(planet.h / 2);
+      });
       planetText.text( GameConfig.planets[this.planet()].lapCount );
       this._planetText = planetText;
     }

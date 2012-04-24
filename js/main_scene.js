@@ -50,7 +50,7 @@ function showBannerText() {
   switch ( StateManager.state() ) {
     case 'attract':
       countdown.visible = true;
-      countdown.text( 'Hold keys to join the race!' );
+      countdown.text( 'Everyone hold a key to join the race!' );
       break;
     case 'countdown':
       countdown.visible = true;

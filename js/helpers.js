@@ -4,7 +4,7 @@ var DEG_TO_RAD = ( 2.0 * Math.PI ) / 360;
 var RAD_TO_DEG = 360 / ( 2.0 * Math.PI );
 
 var GameConfig = {
-  raceCountdownTime: 1
+  raceCountdownTime: 3
   ,cycles: {
     slow:     { accelFactor: 5, mass: 10, maxVelocity: 9 }
     ,normal:  { accelFactor: 10, mass: 7,  maxVelocity: 10 }
