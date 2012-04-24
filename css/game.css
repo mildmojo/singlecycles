@@ -2,11 +2,16 @@
   font-family: Impact, Sans;
 }
 
-.countdown-text {
+.countdown-text, .planet-text {
   font-family: Tahoma, Sans;
 }
 
 .loading-text, .countdown-text {
   color:       white;
   text-align:  center;
+}
+
+.planet-text {
+  color:      black;
+  text-align: center;
 }

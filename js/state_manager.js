@@ -3,13 +3,16 @@ var StateManager = {
   ,_state:          'init'
   ,_currentPlanet:  ''
   ,_currentCycle:   ''
+  ,_currentLap:     0
   ,_countdownStart: null
   ,_lastCount:      0
   ,_laps:           {}
+  ,_planetText:     null
   ,keyEntities:     {}
   ,mouseEntity:     null
   ,touchEntities:   {}
   ,playerCount:     0
+  ,bannerText:      null
 
   ,state: function( new_state ) {
     if ( new_state ) {
@@ -28,11 +31,19 @@ var StateManager = {
         case 'race-finish':
           window.juke.play( 'crowd_noise' );
 
-          winner = _(this._laps).keys().max( function(k){ return this._laps[k] });
-          this._winner = _(Crafty.keys).keys().find(function(k){ return Crafty.keys[k] == winner; });
-          $('body').delay( 3000 ).queue( function() {
+          var self = this;
+          var laps = this._laps;
+          var winner = _.chain(laps).keys().max( function(k){
+            return laps[k];
+          }).value();
+          this._winner = _.chain(Crafty.keys).keys().find(function(k){
+            return Crafty.keys[k] == winner;
+          }).value();
+
+          setTimeout( function() {
+            self.reset();
             Crafty.scene('main');
-          });
+          }, 5000 );
           break;
         case 'finish-attract':
           break;
@@ -75,6 +86,16 @@ var StateManager = {
       planet.x    = center_in_x( planet.w );
       planet.y    = center_in_y( planet.h );
       this._planetSprite = planet;
+
+      var planetText = Crafty.e( '2D, DOM, Text, planet-text' )
+        .attr({
+          x: center_in_x(planet.w)
+          ,y: center_in_y(planet.h / 2)
+          ,w: planet.w
+          ,h: planet.h / 2
+        })
+        .css({ 'font-size': (planet.h / 2).toString() + 'px' });
+      this._planetText = planetText;
     }
 
     return this._planetSprite;
@@ -186,6 +207,11 @@ var StateManager = {
     this._laps[address] += 1;
     window.juke.play('lap_ding');
 
+    if ( this._laps[address] > this._currentLap ) {
+      this._currentLap++;
+      this._planetText.text( this._currentLap );
+    }
+
     if ( this._laps[address] >= GameConfig.planets[this.planet()].lapCount ) {
       this.state('finish');
     }
@@ -193,5 +219,32 @@ var StateManager = {
 
   ,getWinner: function() {
     return this._winner;
+  }
+
+  ,reset: function() {
+    self = StateManager;
+
+    self._planetSprite.destroy();
+    self.mouseEntity && self.mouseEntity.destroy();
+    // _.chain(self.keyEntities).values().each(function(e){
+    //   e.destroy();
+    // });
+    // _.chain(self.touchEntities).values().each(function(e){
+    //   e.destroy();
+    // })
+    self._planetSprite    = null;
+    self._state           = 'init';
+    self._planet          = '';
+    self._state           = 'init';
+    self._currentPlanet   = '';
+    self._currentCycle    = '';
+    self._countdownStart  = null;
+    self._lastCount       = 0;
+    self._laps            = {};
+    self.keyEntities      = {};
+    self.mouseEntity      = null;
+    self.touchEntities    = {};
+    self.playerCount      = 0;
+    self.bannerText       = null;
   }
 }

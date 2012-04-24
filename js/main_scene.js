@@ -13,11 +13,13 @@ $(function(){
     StateManager.planetSprite(); // create
 
     // Hook up per-frame update events
-    Crafty.bind('EnterFrame', function(frame){ frame % 2 && jukebox.Manager.loop(); } );
-    Crafty.bind('EnterFrame', Timer.tick )
+    Crafty.unbind( 'EnterFrame', jukeLoop );
+    Crafty.bind( 'EnterFrame', jukeLoop );
+    Crafty.unbind( 'EnterFrame', Timer.tick );
+    Crafty.bind( 'EnterFrame', Timer.tick );
 
 
-    var countdown = Crafty.e( '2D, DOM, Text, countdown-text' )
+    StateManager.bannerText = Crafty.e( '2D, DOM, Text, countdown-text' )
       .attr({
         x: 0,
         y: SCREEN_HEIGHT / 12,
@@ -28,36 +30,8 @@ $(function(){
       })
       .css({ 'font-size': SCREEN_HEIGHT / 8 });
 
-    Crafty.bind( 'EnterFrame', function() {
-      switch ( StateManager.state() ) {
-        case 'attract':
-          countdown.visible = true;
-          countdown.text( 'Hold keys to join the race!' );
-        case 'countdown':
-          countdown.visible = true;
-          countdownNumber = StateManager.getCountdown();
-          countdown.text( 'Race starts in ' + countdownNumber.toString() + '...' );
-          //this._lastCountdown = countdownNumber;
-          break;
-        case 'race':
-          if ( $(countdown._element).queue().length == 0 && countdown.visible ) {
-            countdown.text( 'GO!!' );
-            $(countdown._element)
-              .delay( 1000 )
-              .fadeOut( 1000 )
-              .queue( function() { countdown.visible = false; });
-          }
-          break;
-        case 'finish':
-          countdown.visible = true;
-          countdown.text( 'Winner: ' );
-          $(countdown._element).delay(500).queue( function(){
-            countdown.text( 'Winner: ' + StateManager.getWinner() );
-          });
-        default:
-          countdown.visible = false;
-      }
-    });
+    Crafty.unbind( 'EnterFrame', showBannerText );
+    Crafty.bind( 'EnterFrame', showBannerText );
 
     // Allow players to join the next race
     StateManager.state('attract');
@@ -66,3 +40,39 @@ $(function(){
 
 });
 
+function jukeLoop(frame) {
+  frame % 2 && jukebox.Manager.loop();
+}
+
+function showBannerText() {
+  countdown = StateManager.bannerText;
+
+  switch ( StateManager.state() ) {
+    case 'attract':
+      countdown.visible = true;
+      countdown.text( 'Hold keys to join the race!' );
+      break;
+    case 'countdown':
+      countdown.visible = true;
+      countdownNumber = StateManager.getCountdown();
+      countdown.text( 'Race starts in ' + countdownNumber.toString() + '...' );
+      //this._lastCountdown = countdownNumber;
+      break;
+    case 'race':
+      if ( $(countdown._element).queue().length == 0 && countdown.visible ) {
+        countdown.text( 'GO!!' );
+        $(countdown._element)
+          .delay( 1000 )
+          .fadeOut( 1000 )
+          .queue( function() { countdown.visible = false; });
+      }
+      break;
+    case 'finish':
+      countdown.text( 'Winner: ' + StateManager.getWinner() );
+      countdown.visible = true;
+      $(countdown._element).show();
+      break;
+    default:
+      countdown.visible = false;
+  }
+}

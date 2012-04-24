@@ -6,14 +6,14 @@ var RAD_TO_DEG = 360 / ( 2.0 * Math.PI );
 var GameConfig = {
   raceCountdownTime: 1
   ,cycles: {
-    slow:     { accelFactor: 20, mass: 10, maxVelocity: 8 }
-    ,normal:  { accelFactor: 30, mass: 7,  maxVelocity: 9 }
-    ,fast:    { accelFactor: 40, mass: 4,  maxVelocity: 10 }
+    slow:     { accelFactor: 5, mass: 10, maxVelocity: 9 }
+    ,normal:  { accelFactor: 10, mass: 7,  maxVelocity: 10 }
+    ,fast:    { accelFactor: 15, mass: 4,  maxVelocity: 11 }
   }
   ,planets: {
-    fire:     { gravity: 5, radius: 80, friction: 10 }
-    ,jungle:  { gravity: 5, radius: 80, friction: 10 }
-    ,rock:    { gravity: 5, radius: 80, friction: 10 }
+    fire:     { gravity: 1, radius: 80, friction: 6, lapCount: 10 }
+    ,jungle:  { gravity: 1, radius: 80, friction: 6, lapCount: 15 }
+    ,rock:    { gravity: 1, radius: 80, friction: 6, lapCount: 20 }
   }
 };
 

@@ -72,6 +72,7 @@ $(function(){
         case 'attract', 'countdown':
           break;
         case 'race':
+          //console.log([this._accelFactor, this.isAirborne]);
           if ( ! this.isAirborne ) {
             this._velocity += this._accelFactor * dt;
           }
@@ -80,12 +81,14 @@ $(function(){
           //console.log([ dt, this._accelFactor, planet.friction, this._maxVelocity, this._velocity ]);
           break;
         case 'finish':
+          this._velocity -= planet.friction * dt;
+          this._velocity  = clampVal( this._velocity, 0, this._maxVelocity );
           break;
       }
 
       // Linear velocity is pct of circumference, convert to angular
       two_pi = 2.0 * Math.PI;
-      altitude = planet.radius + this.h / 2.0;
+      altitude = this._radius + this.h / 2.0;
       circumference = altitude * two_pi;
       rotation_incr = ( (this._velocity / circumference) * 360 );
 
@@ -103,8 +106,42 @@ $(function(){
       this.x = Math.cos( angle ) * altitude + origin().x - this.w / 2;
       this.y = Math.sin( angle ) * altitude + origin().y - this.h / 2;
 
+      cycle = GameConfig.cycles[this._cycleName]
+
       // calculate centripetal force based on new velocity
-      //this.isAirborne = ( self._radius > Race.planet.radius );
+      // upforce     = ( cycle.mass * this._velocity * this._velocity) / this._radius;
+      // //upforce    *= 8; // FUDGE FACTOR
+      // downforce   = planet.gravity * cycle.mass;
+      // vert_force  = upforce - downforce;
+      // //console.log([upforce, downforce, vert_force]);
+      // //console.log(vert_force);
+      // this._radius += vert_force;
+      // this._radius  = clampVal( planet.radius, planet.radius * 2, this._radius );
+
+      // is_airborne = ( this._radius > planet.radius * 1.05 );
+
+      if ( this._velocity > cycle.maxVelocity - 1 ) {
+        this._radius += 4;
+      } else {
+        this._radius -= 0.5;
+      }
+
+      this._radius = clampVal( this._radius, planet.radius, planet.radius * 2 );
+
+      var is_airborne = false;
+
+      if ( this.isAirborne ) {
+        is_airborne = this._radius > planet.radius * 1.01;
+      } else {
+        is_airborne = this._radius > planet.radius * 1.13;
+      }
+
+      if ( is_airborne && ! this.isAirborne ) {
+        console.log('air!');
+        window.juke.play('liftoff');
+      }
+
+      this.isAirborne = is_airborne;
     }
     // track:
     //   key bound to this player

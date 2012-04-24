@@ -3,7 +3,7 @@ $(function(){
   Crafty.scene('loading', function(){
     Crafty.background( '#333' );
 
-    height = SCREEN_HEIGHT / 5;
+    height = SCREEN_HEIGHT / 7;
     msg = Crafty.e( '2D, DOM, Text, loading-text' )
       .text( 'Circumnavigating, please wait...' )
       .attr({ w: SCREEN_WIDTH, h: height, z: Layer.HUD_BG })
@@ -14,7 +14,7 @@ $(function(){
 
     $(msg._element).animate({ top: center_in_y( msg.h ) });
 
-    height = SCREEN_HEIGHT / 8;
+    height = SCREEN_HEIGHT / 10;
     progress = Crafty.e( '2D, DOM, Text, loading-text' )
       .attr({ w: SCREEN_WIDTH, h: height, z: Layer.HUD_BG })
       .css({ 'font-size': height.toString() + 'px' });
