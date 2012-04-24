@@ -95,6 +95,7 @@ var StateManager = {
           ,h: planet.h / 2
         })
         .css({ 'font-size': (planet.h / 2).toString() + 'px' });
+      planetText.text( GameConfig.planets[this.planet()].lapCount );
       this._planetText = planetText;
     }
 
@@ -209,7 +210,8 @@ var StateManager = {
 
     if ( this._laps[address] > this._currentLap ) {
       this._currentLap++;
-      this._planetText.text( this._currentLap );
+      this._planetText.text( GameConfig.planets[this.planet()].lapCount
+                             - this._currentLap );
     }
 
     if ( this._laps[address] >= GameConfig.planets[this.planet()].lapCount ) {
@@ -225,7 +227,9 @@ var StateManager = {
     self = StateManager;
 
     self._planetSprite.destroy();
-    self.mouseEntity && self.mouseEntity.destroy();
+    self.bannerText.destroy();
+    self._planetText.destroy();
+    //self.mouseEntity && self.mouseEntity.destroy();
     // _.chain(self.keyEntities).values().each(function(e){
     //   e.destroy();
     // });
@@ -240,11 +244,13 @@ var StateManager = {
     self._currentCycle    = '';
     self._countdownStart  = null;
     self._lastCount       = 0;
+    self._currentLap      = 0;
     self._laps            = {};
     self.keyEntities      = {};
     self.mouseEntity      = null;
     self.touchEntities    = {};
     self.playerCount      = 0;
     self.bannerText       = null;
+    self._planetText      = null;
   }
 }

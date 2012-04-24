@@ -22,7 +22,7 @@ $(function(){
     progress.x = center_in_x(progress.width)
     progress.y = SCREEN_HEIGHT + 10;
 
-    $(progress._element).animate({ top: SCREEN_HEIGHT * 0.75 });
+    $(progress._element).animate({ top: SCREEN_HEIGHT * 0.7 });
 
     var assets = [
       'assets/images/unicycles.png'
