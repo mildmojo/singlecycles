@@ -15,8 +15,19 @@ $(function(){
     ,isAirborne:      false
 
     ,init: function() {
-      this.requires( '2D, Canvas' );
+      this.requires( '2D, Canvas, Tint' );
       this.bind( 'EnterFrame', this.enterFrame );
+
+      // Start on top of the planet
+      planetName   = StateManager.planet();
+      planetSprite = StateManager.planetSprite();
+      this.attr({
+        x: origin().x
+        ,y: origin().y - GameConfig.planets[planetName].radius / 2
+        ,w: 48
+        ,h: 48
+      });
+
       return this;
     }
 

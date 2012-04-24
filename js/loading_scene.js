@@ -1,20 +1,4 @@
-var SCREEN_WIDTH;
-var SCREEN_HEIGHT;
-
 $(function(){
-
-  // FULL SCREEN LIKE A BOSS
-  Crafty.init();
-
-  SCREEN_WIDTH  = Crafty.DOM.window.width;
-  SCREEN_HEIGHT = Crafty.DOM.window.height;
-console.log([SCREEN_WIDTH, SCREEN_HEIGHT]);
-  // Monitor browser resize events, like mobile orientation changes
-  $(window).resize(function(){
-    SCREEN_WIDTH  = Crafty.DOM.window.width;
-    SCREEN_HEIGHT = Crafty.DOM.window.height;
-  });
-
 
   Crafty.scene('loading', function(){
     Crafty.background( '#333' );
@@ -78,11 +62,11 @@ console.log([SCREEN_WIDTH, SCREEN_HEIGHT]);
 
     window.juke = new jukebox.Player({
       resources: [
-        'assets/sounds/spritemap.ac3'
-        ,'assets/sounds/spritemap.mp3'
-        ,'assets/sounds/spritemap.m4a'
-        ,'assets/sounds/spritemap.ogg'
-        ,'assets/sounds/spritemap.amr'
+        'assets/sounds/spritesheet.ac3'
+        ,'assets/sounds/spritesheet.mp3'
+        ,'assets/sounds/spritesheet.m4a'
+        ,'assets/sounds/spritesheet.ogg'
+        ,'assets/sounds/spritesheet.amr'
       ],
 
       spritemap: {
@@ -136,7 +120,5 @@ console.log([SCREEN_WIDTH, SCREEN_HEIGHT]);
     });
 
   }
-
-  Crafty.scene('loading');
 
 });

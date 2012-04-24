@@ -1,4 +1,5 @@
 $(function(){
+
   Crafty.scene('main', function(){
     fadeFromBlack( 1000 );
 
@@ -9,37 +10,43 @@ $(function(){
     StateManager.state('init');
     StateManager.cycle('normal');
     StateManager.planet('fire');
+    StateManager.planetSprite(); // create
 
     // Hook up per-frame update events
-    Crafty.bind('enterframe', jukebox.Manager.loop );
-    Crafty.bind('enterframe', Timer.tick )
+    Crafty.bind('EnterFrame', function(frame){ frame % 2 && jukebox.Manager.loop(); } );
+    Crafty.bind('EnterFrame', Timer.tick )
 
-    var planet  = Crafty.e( '2D, Canvas, Tween, world_' + StateManager.planet() );
-    planet.x    = center_in_x( planet.w );
-    planet.y    = center_in_y( planet.h );
 
     var countdown = Crafty.e( '2D, DOM, Text, countdown-text' )
-      .attr({ x: 0, y: SCREEN_HEIGHT / 12, z: Layer.HUD_BG, visible: false })
+      .attr({
+        x: 0,
+        y: SCREEN_HEIGHT / 12,
+        z: Layer.HUD_BG,
+        w: SCREEN_WIDTH,
+        h: SCREEN_HEIGHT / 8,
+        visible: false
+      })
       .css({ 'font-size': SCREEN_HEIGHT / 8 });
 
-    Crafty.bind( 'Enterframe', function() {
-      if ( StateManager.state() == 'countdown' ) {
-        countdownNumber = StateManager.getCountdown();
-        countdown.visible( true );
-
-        if ( countdownNumber == 0 ) {
-          countdown.text( 'GO!!' );
-          $(countdown._element)
-            .delay( 1000 )
-            .slideOut( 1000 )
-            .queue( function() { countdown.visible( false )});
-        } else {
-          countdown.text( 'Race starts in ' + countdownNumber.toString + '...' );
-        }
-
-        this._lastCountdown = countdownNumber;
-      } else {
-        countdown.visible( false );
+    Crafty.bind( 'EnterFrame', function() {
+      switch ( StateManager.state() ) {
+        case 'countdown':
+          countdown.visible = true;
+          countdownNumber = StateManager.getCountdown();
+          countdown.text( 'Race starts in ' + countdownNumber.toString() + '...' );
+          //this._lastCountdown = countdownNumber;
+          break;
+        case 'race':
+          if ( $(countdown._element).queue().length == 0 && countdown.visible ) {
+            countdown.text( 'GO!!' );
+            $(countdown._element)
+              .delay( 1000 )
+              .fadeOut( 1000 )
+              .queue( function() { countdown.visible = false; });
+          }
+          break;
+        default:
+          countdown.visible = false;
       }
     });
 
@@ -47,5 +54,6 @@ $(function(){
     StateManager.state('attract');
 
   });
+
 });
 
