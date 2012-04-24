@@ -116,7 +116,7 @@ var StateManager = {
     newEntity = Crafty.e( 'Unicycle' )
         .cycle( this.cycle() )
         .controls( method, address )
-        .tint( PlayerColors[this.playerCount], 0.4 );
+        .tint( PlayerColors[this.playerCount % PlayerColors.length], 0.4 );
 
     switch ( method ) {
       case 'mouse':
