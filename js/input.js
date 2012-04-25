@@ -82,16 +82,11 @@ function initInput() {
     extendedKeys = _([ 'COMMA', 'MINUS', 'PERIOD', 'PLUS', 'TAB', 'CAPS',
       'MULTIPLY', 'ADD', 'SUBSTRACT', 'DECIMAL', 'DIVIDE', 'LEFT_ARROW',
       'RIGHT_ARROW', 'DOWN_ARROW', 'UP_ARROW', 'INSERT', 'DELETE', 'END',
-      'HOME', 'ENTER', 'SPACE', 'SHIFT'
+      'HOME', 'ENTER', 'SPACE', 'SHIFT',
+      // Extended keycodes configured in init.js:
+      'EQUALS', 'TILDE', 'SEMICOLON', 'LEFT_BRACKET', 'RIGHT_BRACKET',
+      'BACKSLASH', 'SLASH'
     ]).map( function(key) { return Crafty.keys[key]; } );
-
-    extendedKeys.push( 61 );  // EQUALS
-    extendedKeys.push( 192 ); // TILDE
-    extendedKeys.push( 59 );  // SEMICOLON
-    extendedKeys.push( 219 ); // LEFT_BRACKET
-    extendedKeys.push( 221 ); // RIGHT_BRACKET
-    extendedKeys.push( 220 ); // BACKSLASH
-    extendedKeys.push( 191 ); // SLASH
 
     return ( key >= Crafty.keys['A'] && key <= Crafty.keys['Z'] )
       || ( key >= Crafty.keys['0'] && key <= Crafty.keys['9'] )
