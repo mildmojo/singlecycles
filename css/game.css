@@ -6,7 +6,7 @@
   font-family: Tahoma, Sans;
 }
 
-.byline-text {
+.byline-text, .player-name {
   font-family:  Tahoma, Verdana, Sans;
   color:        #A0A0A0;
   text-align:   center;

@@ -7,9 +7,6 @@ $(function(){
 
     initInput();
 
-    StateManager.state('init');
-    StateManager.cycle('normal');
-    StateManager.planet('fire');
     StateManager.planetSprite(); // create
 
     // Hook up per-frame update events

@@ -12,6 +12,7 @@ $(function(){
     ,_originX:        0
     ,_originY:        0
     ,_joinTimerStart: null
+    ,_nameText:       null
     ,isAirborne:      false
 
     ,init: function() {
@@ -34,6 +35,7 @@ $(function(){
       this._spriteName  = 'unicycle_' + cycleName;
       this.requires( this._spriteName );
 
+      this.enterFrame();
       this.ready = true;
       this.trigger('Change');
 
@@ -46,6 +48,37 @@ $(function(){
       if ( arguments.length == 2 ) {
         this._controlMethod   = method.toLowerCase;
         this._controlAddress  = address;
+
+        if ( this._nameText ) {
+          this._nameText.destroy();
+        }
+
+        var playerName;
+
+        switch ( true ) {
+          case method == 'mouse':
+            playerName = 'Rodent';
+            break;
+          case method == 'touch':
+            playerName = 'Finger';
+            break;
+          default:
+            playerName = Crafty.keyNames[address].replace( '_', ' ' );
+        }
+
+        // Add floating player name above player sprite
+        var height = playerName.length > 8 ? this.h / 4 : this.h / 3;
+        this._nameText = Crafty.e( '2D, DOM, Text, player-name' )
+          .attr({
+            w: this.w * 2,
+            h: height,
+            x: (this.x + this.w / 2) - this.w,
+            y: this.y - (this.h / 3) * 2
+          })
+          .css({ 'font-size': height })
+          .text( playerName );
+        // Move with player sprite
+        this.attach( this._nameText );
       }
 
       return this;
@@ -100,6 +133,7 @@ $(function(){
       }
 
       this.rotation = new_rotation;
+      this._nameText && (this._nameText.rotation = new_rotation);
 
       // Move the player on the surface of the planet
       angle = (this.rotation - 90) * DEG_TO_RAD;
@@ -121,9 +155,9 @@ $(function(){
       // is_airborne = ( this._radius > planet.radius * 1.05 );
 
       if ( this._velocity > cycle.maxVelocity - 1 ) {
-        this._radius += 4;
+        this._radius += 65 * dt;
       } else {
-        this._radius -= 0.5;
+        this._radius -= 18 * dt;
       }
 
       this._radius = clampVal( this._radius, planet.radius, planet.radius * 2 );
@@ -133,7 +167,7 @@ $(function(){
       if ( this.isAirborne ) {
         is_airborne = this._radius > planet.radius * 1.01;
       } else {
-        is_airborne = this._radius > planet.radius * 1.13;
+        is_airborne = this._radius > planet.radius * 1.15;
       }
 
       if ( is_airborne && ! this.isAirborne ) {

@@ -19,7 +19,7 @@ var StateManager = {
     if ( new_state ) {
       transition  = this._state + '-' + new_state;
       this._state = new_state;
-//console.log(transition);
+
       switch ( transition ) {
         case 'attract-countdown':
         case 'countdown-countdown':
@@ -37,9 +37,7 @@ var StateManager = {
           var winner = _.chain(laps).keys().max( function(k){
             return laps[k];
           }).value();
-          this._winner = _.chain(Crafty.keys).keys().find(function(k){
-            return Crafty.keys[k] == winner;
-          }).value();
+          this._winner = Crafty.keyNames[winner].replace( '_', ' ' );
 
           setTimeout( function() {
             self.reset();
@@ -251,8 +249,8 @@ var StateManager = {
     self._state           = 'init';
     self._planet          = '';
     self._state           = 'init';
-    self._currentPlanet   = '';
-    self._currentCycle    = '';
+    //self._currentPlanet   = '';
+    //self._currentCycle    = '';
     self._countdownStart  = null;
     self._lastCount       = 0;
     self._currentLap      = 0;

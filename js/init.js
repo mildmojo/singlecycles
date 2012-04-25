@@ -16,7 +16,14 @@ $(function(){
   });
 
   // Add some unsupported keycodes to Crafty.keys
-  extendKeys();
+  extendCraftyKeys();
+
+  // Add reverse lookup, keycode to key name
+  addCraftyKeyNames();
+
+  StateManager.state('init');
+  StateManager.cycle('normal');
+  StateManager.planet('fire');
 
   Crafty.scene('loading');
 
@@ -24,7 +31,7 @@ $(function(){
 
 
 // Add some unsupported keycodes to Crafty.keys
-function extendKeys(){
+function extendCraftyKeys(){
   jQuery.extend( Crafty.keys, {
     EQUALS:         61
     ,TILDE:         192
@@ -33,5 +40,14 @@ function extendKeys(){
     ,RIGHT_BRACKET: 221
     ,BACKSLASH:     220
     ,SLASH:         191
+  });
+}
+
+// Build reverse map of key code to key name
+function addCraftyKeyNames() {
+  Crafty.extend({ keyNames: {} });
+
+  _.chain(Crafty.keys).keys().each( function(k){
+    Crafty.keyNames[Crafty.keys[k]] = k;
   });
 }
