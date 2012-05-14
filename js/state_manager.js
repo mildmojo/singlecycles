@@ -15,48 +15,33 @@ var StateManager = {
   ,bannerText:      null
   ,bylineText:      null
 
+  ,init: function() {
+    Crafty.bind( 'enter-countdown', startCountdown );
+    Crafty.bind( 'trans-countdown-countdown', startCountdown );
+    Crafty.bind( 'leave-countdown', stopCountdown );
+    Crafty.bind( 'enter-finish', finishRace );
+
+    Crafty.bind( 'WindowResize', centerPlanet );
+  }
+
   ,state: function( new_state ) {
     if ( new_state ) {
-      transition  = this._state + '-' + new_state;
-      this._state = new_state;
+      var old_state = this._state;
 
-      switch ( transition ) {
-        case 'attract-countdown':
-        case 'countdown-countdown':
-          this.startCountdown();
-          break;
-        case 'countdown-attract':
-        case 'countdown-race':
-          this.stopCountdown();
-          break;
-        case 'race-finish':
-          window.juke.play( 'crowd_noise' );
-
-          var self = this;
-          var laps = this._laps;
-          var winner = _.chain(laps).keys().max( function(k){
-            return laps[k];
-          }).value();
-          this._winner = Crafty.keyNames[winner].replace( '_', ' ' );
-
-          setTimeout( function() {
-            self.reset();
-            Crafty.scene('main');
-          }, 5000 );
-          break;
-        case 'finish-attract':
-          break;
+      // TRIGGER: leaving-state
+      if ( new_state != old_state ) {
+        Crafty.trigger( 'leave-' + this._state );
       }
 
-      switch ( this._state ) {
-        case 'attract':
-          break;
-        case 'countdown':
-          break;
-        case 'race':
-          break;
-        case 'finish':
-          break;
+      transition  = old_state + '-' + new_state;
+      this._state = new_state;
+
+      // TRIGGER: trans-oldstate-newstate
+      Crafty.trigger( 'trans-' + transition );
+
+      // TRIGGER: enter-newstate
+      if ( new_state != old_state ) {
+        Crafty.trigger( 'enter-' + this._state );
       }
     }
 
@@ -82,14 +67,8 @@ var StateManager = {
   ,planetSprite: function() {
     if ( ! this._planetSprite ) {
       var planet  = Crafty.e( '2D, Canvas, Tween, world_' + this.planet() );
-      planet.x    = center_in_x( planet.w );
-      planet.y    = center_in_y( planet.h );
-      planet.bind('EnterFrame', function(){
-        planet.x    = center_in_x( planet.w );
-        planet.y    = center_in_y( planet.h );
-      });
       this._planetSprite = planet;
-
+      centerPlanet();
 
       var planetText = Crafty.e( '2D, DOM, Text, planet-text' )
         .attr({
@@ -99,12 +78,10 @@ var StateManager = {
         .css({ 'font-size': (planet.h / 2).toString() + 'px' });
       planetText.x = center_in_x(planet.w);
       planetText.y = center_in_y(planet.h / 2);
-      planetText.bind('EnterFrame', function(){
-        planetText.x = center_in_x(planet.w);
-        planetText.y = center_in_y(planet.h / 2);
-      });
       planetText.text( GameConfig.planets[this.planet()].lapCount );
       this._planetText = planetText;
+
+      this._planetSprite.attach( this._planetText );
     }
 
     return this._planetSprite;
@@ -113,7 +90,7 @@ var StateManager = {
   // method:: 'mouse', 'touch', 'key'
   // address:: null, coordinate pair, key code
   ,addPlayer: function( method, address ) {
-    newEntity = Crafty.e( 'Unicycle' )
+    var newEntity = Crafty.e( 'Unicycle' )
         .cycle( this.cycle() )
         .controls( method, address )
         .tint( PlayerColors[this.playerCount % PlayerColors.length], 0.4 );
@@ -139,14 +116,10 @@ var StateManager = {
   }
 
   ,removePlayer: function( method, address ) {
-    switch ( this.state() ) {
-      case 'attract':
-      case 'countdown':
-        if ( this.playerCount == 1 ) {
-          this.state('attract');
-        } else {
-          this.state('countdown');
-        }
+    if ( this.playerCount == 1 ) {
+      this.state('attract');
+    } else {
+      this.state('countdown');
     }
 
     switch ( method ) {
@@ -168,48 +141,6 @@ var StateManager = {
     window.juke.play( 'bubble' );
     this.playerCount--;
     //console.log( 'player removed: ' + this.playerCount.toString() + ' remaining' );
-  }
-
-  ,startCountdown: function() {
-    switch ( this.state() ) {
-      case 'attract':
-      case 'countdown':
-        if ( this.playerCount > 0 ) {
-          this._countdownStart = new Date;
-          Crafty.bind('EnterFrame', this.doCountdown );
-        }
-    }
-  }
-
-  ,stopCountdown: function() {
-    this._countdownStart = null;
-    Crafty.unbind( 'EnterFrame', this.doCountdown );
-  }
-
-  ,getCountdown: function() {
-    if ( this._countdownStart == null ) return 0;
-
-    var elapsed = Timer.now() - this._countdownStart;
-    return Math.ceil( GameConfig.raceCountdownTime - elapsed / 1000 );
-  }
-
-  // Called on Enterframe, plays sounds & transitions from countdown to race
-  ,doCountdown: function() {
-    if ( StateManager.state() == 'countdown' ) {
-      var curCount = StateManager.getCountdown();
-
-      if ( curCount != StateManager._lastCount ) {
-        var tone = curCount == 0 ? 'start_tone' : 'countdown_tone';
-        window.juke.play( tone );
-      }
-
-      if ( curCount == 0 ) {
-        StateManager.state( 'race' );
-        StateManager.stopCountdown();
-      }
-
-      StateManager._lastCount = curCount;
-    }
   }
 
   ,countLap: function( address ) {
@@ -264,3 +195,65 @@ var StateManager = {
     self.bylineText       = null;
   }
 }
+
+
+function centerPlanet() {
+  var planet = StateManager._planetSprite;
+  planet.x = center_in_x( planet.w );
+  planet.y = center_in_y( planet.h );
+}
+
+function startCountdown() {
+  if ( StateManager.playerCount > 0 ) {
+    stopCountdown();
+    StateManager._countdownStart = new Date;
+    Crafty.bind('EnterFrame', doCountdown );
+  }
+}
+
+function stopCountdown() {
+  StateManager._countdownStart = null;
+  Crafty.unbind( 'EnterFrame', doCountdown );
+}
+
+function getCountdown() {
+  if ( StateManager._countdownStart == null ) return 0;
+
+  var elapsed = Timer.now() - StateManager._countdownStart;
+  return Math.ceil( GameConfig.raceCountdownTime - elapsed / 1000 );
+}
+
+// Called on Enterframe, plays sounds & transitions from countdown to race
+function doCountdown() {
+  if ( StateManager.state() == 'countdown' ) {
+    var curCount = getCountdown();
+
+    if ( curCount != StateManager._lastCount ) {
+      Crafty.trigger( 'CountdownTick', curCount );
+      var tone = curCount == 0 ? 'start_tone' : 'countdown_tone';
+      window.juke.play( tone );
+    }
+
+    if ( curCount <= 0 ) {
+      StateManager.state( 'race' );
+    }
+
+    StateManager._lastCount = curCount;
+  }
+}
+
+function finishRace() {
+  window.juke.play( 'crowd_noise' );
+
+  var laps    = StateManager._laps;
+  var winner  = _.chain(laps).keys().max( function(k){
+    return laps[k];
+  }).value();
+  StateManager._winner = Crafty.keyNames[winner].replace( '_', ' ' );
+
+  setTimeout( function() {
+    StateManager.reset();
+    Crafty.scene('main');
+  }, 5000 );
+}
+

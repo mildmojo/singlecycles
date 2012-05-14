@@ -13,6 +13,7 @@ $(function(){
   $(window).resize(function(){
     SCREEN_WIDTH  = Crafty.DOM.window.width;
     SCREEN_HEIGHT = Crafty.DOM.window.height;
+    Crafty.trigger( 'WindowResize' );
   });
 
   // Add some unsupported keycodes to Crafty.keys
@@ -21,9 +22,15 @@ $(function(){
   // Add reverse lookup, keycode to key name
   addCraftyKeyNames();
 
+  StateManager.init();
   StateManager.state('init');
   StateManager.cycle('normal');
   StateManager.planet('fire');
+
+  // Set up Crafty trigger bindings for main scene
+  MainSceneBinds.init();
+
+  // bind everything
 
   Crafty.scene('loading');
 
