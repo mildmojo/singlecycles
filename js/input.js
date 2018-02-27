@@ -14,13 +14,13 @@ function initInput() {
       handleEvent( 'up', StateManager.mouseEntity );
     })
     .bind( 'KeyDown', function(e){
-      if ( isUsableKey( e.key ) ) {
-        entity = StateManager.keyEntities[e.key];
+      if ( isUsableKey( e.which ) ) {
+        entity = StateManager.keyEntities[e.which];
 
         switch ( StateManager.state() ) {
           case 'attract':
           case 'countdown':
-            StateManager.addPlayer( 'key', e.key );
+            StateManager.addPlayer( 'key', e.which );
             break;
           case 'race':
             break;
@@ -35,7 +35,7 @@ function initInput() {
       }
     })
     .bind( 'KeyUp', function(e){
-      if ( isUsableKey( e.key ) ) {
+      if ( isUsableKey( e.which ) ) {
         entity = StateManager.keyEntities[e.key];
 
         switch ( StateManager.state() ) {
@@ -43,7 +43,7 @@ function initInput() {
             break;
           case 'countdown':
             // Key released before race start; remove player and restart timer
-            StateManager.removePlayer( 'key', e.key );
+            StateManager.removePlayer( 'key', e.which );
             break;
           case 'race':
             break;
